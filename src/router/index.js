@@ -1,7 +1,11 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
+import { createRouter, createWebHistory } from 'vue-router';
+
+import HomeView from "@/views/HomeView.vue";
+import LexicalAnalyzer from "@/views/LexicalAnalyzer.vue";
+import SyntacticAnalyzer from "@/views/SyntacticAnalyzer.vue";
 
 const router = createRouter({
+  linkActiveClass: 'active',
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
@@ -10,14 +14,16 @@ const router = createRouter({
       component: HomeView
     },
     {
-      path: '/about',
-      name: 'about',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import('../views/AboutView.vue')
+      path: '/lexical',
+      name: 'lexical',
+      component: LexicalAnalyzer
+    },
+    {
+      path: '/syntactic',
+      name: 'syntactic',
+      component: SyntacticAnalyzer
     }
   ]
-})
+});
 
-export default router
+export default router;
