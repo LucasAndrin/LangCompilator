@@ -30,93 +30,37 @@ function filterToken(token, string) {
 export function getTokens(text) {
     return new Promise((resolve, reject) => {
         let state = 0,
-            index = 0,
             previousIndex = 0;
         let lexeme = '';
         const tokens = [];
 
-        function pushToken() {
-            tokens.push({
-                name: Lexical[state].token,
-                lexeme,
-                startPos: previousIndex,
-                finalPos: index - 1
-            });
-        }
-
-        while (index <= text.value.length) {
+        for (let index = 0; index <= text.value.length; index++) {
             const char = text.value.charAt(index);
             if (char in Lexical[state]) {
-                state = Lexical[state][char];
+                state = Lexical[state][char]
                 lexeme += char;
-                index++;
             } else if (Lexical[state].token) {
                 if (![":", "?"].includes(Lexical[state].token)) {
-                    pushToken();
+                    tokens.push({
+                        name: filterToken(Lexical[state].token, lexeme),
+                        lexeme: lexeme,
+                        startPos: previousIndex,
+                        finalPos: index - 1
+                    });
                 }
 
-                if (Lexical[state].token !== ":" || !lexeme.trim().length) {
-                    previousIndex = index;
-                    index++;
+                if (Lexical[state].token === ":" || lexeme.trim().length) {
+                    index--;
                 }
 
+                previousIndex = index;
                 lexeme = '';
                 state = 0;
+            } else {
+                reject(`Undefined state ${state}`);
             }
         }
 
-        // for (let index = 0; index <= text.value.length; index++) {
-        //     const char = text.value.charAt(index);
-        //     if (char in Lexical[state]) {
-        //         state = Lexical[state][char];
-        //         lexeme += char;
-        //     } else if (Lexical[state].token) {
-        //         if (![":", "?"].includes(Lexical[state].token)) {
-        //             tokens.push({
-        //                 name: filterToken(Lexical[state].token, lexeme),
-        //                 lexeme: lexeme,
-        //                 startPos: previousIndex,
-        //                 finalPos: index - 1
-        //             });
-        //         }
-        //
-        //         if (Lexical[state].token === ":" || lexeme.trim().length) {
-        //             index--;
-        //         }
-        //
-        //         previousIndex = index;
-        //         lexeme = '';
-        //         state = 0;
-        //     }
-        // }
-
-        console.log(tokens);
-
-        if (tokens.length > 0) {
-            resolve(tokens);
-        } else {
-            reject("Nenhum token encontrado no texto fornecido.");
-        }
         resolve(tokens);
     });
 }
-
-    // let index = 0;
-    // while (index <= text.length) {
-    //     const char = text.charAt(index);
-    //
-    //     if (char in Lexical[state]) {
-    //
-    //         state = Lexical[state][char];
-    //         lexeme += char;
-    //
-    //     } else if (Lexical[state].token === ":") {
-    //         state = 0;
-    //         lexeme = '';
-    //         previousIndex = index - 1;
-    //     } else if (Lexical[state].token === "?") {
-    //         throw new Error(`Unexpected char ${JSON.stringify(char)} at position ${index}!`);
-    //     } else {
-    //
-    //     }
-    // }

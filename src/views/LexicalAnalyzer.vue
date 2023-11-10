@@ -12,18 +12,11 @@ function submit() {
   }
 
   getTokens(text)
-      .then(success => {
-        console.info(success);
-      })
-      .catch(error => {
-        console.error(error);
-      });
-
-  // getTokens.then(data => {
-  //   tokens.value = data;
-  // }).catch(error => {
-  //   console.error(error);
-  // });
+  .then(data => {
+    tokens.value = data;
+  }).catch(error => {
+    errorMsg.value = error;
+  });
 }
 
 const errorMsg = ref('');
