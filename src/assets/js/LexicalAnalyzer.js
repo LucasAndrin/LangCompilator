@@ -1,32 +1,5 @@
 import Lexical from "./Lexical";
 
-const reservedWords = {
-    id: {
-        function: 'fn',
-        if: 'if',
-        else: 'else',
-        for: 'for',
-        while: 'while',
-        print: 'print',
-        return: 'return',
-        and: 'and',
-        or: 'or',
-        true: 'true',
-        false: 'false',
-        bool: 'bool',
-        int: 'int',
-        char: 'char',
-        string: 'string'
-    }
-}
-
-function filterToken(token, string) {
-    if (reservedWords[token] && reservedWords[token][string]) {
-        return reservedWords[token][string];
-    }
-    return token;
-}
-
 export function getTokens(text) {
     return new Promise((resolve, reject) => {
         let state = 0,
@@ -42,7 +15,7 @@ export function getTokens(text) {
             } else if (Lexical[state].token) {
                 if (![":", "?"].includes(Lexical[state].token)) {
                     tokens.push({
-                        name: filterToken(Lexical[state].token, lexeme),
+                        name: Lexical[state].token,
                         lexeme: lexeme,
                         startPos: previousIndex,
                         finalPos: index - 1
