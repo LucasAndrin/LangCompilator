@@ -1,7 +1,50 @@
 <script setup>
+import { ref } from "vue";
+import Syntactic from "@/assets/js/Syntactic";
+import {getTokens} from "@/assets/js/LexicalAnalyzer";
 
+const text = ref(`function name(string a = "Hello World", int c = 1, char b = 'a'): int\n{\n\treturn a + b;\n}`);
+function submit() {
+  setError('');
+  if (!text.value) {
+    return setError('Enter with your code!')
+  }
+
+  getTokens(text)
+  .then(data => {
+    console.log(data);
+    Syntactic.parse(data)
+    .then(success => {
+      alert(success);
+    }).catch(error => {
+      errorMsg.value = error;
+    });
+  }).catch(error => {
+    errorMsg.value = error;
+  });
+}
+
+const errorMsg = ref('');
+function setError(msg) {
+  errorMsg.value = msg;
+}
 </script>
 
 <template>
-  Hello World
+  <form class="bg-body-tertiary mt-5 px-4 py-3 rounded mb-3" @submit.prevent="submit">
+    <div class="mb-3">
+      <label for="text" class="form-label">Your Code</label>
+      <textarea v-model="text" name="text" id="text"
+                rows="10"
+                class="form-control"
+                :class="{ 'is-invalid': errorMsg }"
+                placeholder="Enter with your code here..."
+      />
+      <div class="invalid-feedback">
+        {{ errorMsg }}
+      </div>
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+    {{ Syntactic.transitions[28] }}
+  </form>
 </template>

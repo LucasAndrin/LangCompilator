@@ -1374,7 +1374,7 @@ export default [{
 }, {
     "token": "clos_b"
 }, {
-    "token": "string"
+    "token": "str"
 }, {
     "token": "and"
 }, {
