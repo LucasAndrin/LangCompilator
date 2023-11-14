@@ -704,12 +704,10 @@ export default class Syntactic {
             let i = 0;
 
             while (tokens) {
-                const token = tokens[i] || {
-                    name: '$'
-                };
+                const token = tokens[i] || { name: '$' };
 
                 if (!(token.name in this.transitions[stack[0]].action)) {
-                    return reject(`Unexpected token "${tokens[i].name}" in ${stack[0]}`)
+                    return reject(`Unexpected token "${tokens[i].lexeme}" in ${stack[0]}`)
                 }
                 const [ action, argument, nonTerminal ] = this.transitions[stack[0]].action[token.name].split(' ');
 

@@ -6,27 +6,33 @@ import {getTokens} from "@/assets/js/LexicalAnalyzer";
 const text = ref(`function name(string a = "Hello World", int c = 1, char b = 'a'): int\n{\n\treturn a + b;\n}`);
 function submit() {
   setError('');
+  setSuccess('');
   if (!text.value) {
     return setError('Enter with your code!')
   }
 
   getTokens(text)
-  .then(data => {
-    console.log(data);
-    Syntactic.parse(data)
-    .then(success => {
-      alert(success);
-    }).catch(error => {
-      errorMsg.value = error;
-    });
-  }).catch(error => {
-    errorMsg.value = error;
-  });
+      .then(data => {
+        console.log(data);
+        Syntactic.parse(data)
+            .then(success => {
+              setSuccess(success)
+            }).catch(error => {
+              setError(error);
+            });
+      }).catch(error => {
+        setError(error);
+      });
 }
 
 const errorMsg = ref('');
 function setError(msg) {
   errorMsg.value = msg;
+}
+
+const successMsg = ref('');
+function setSuccess(msg) {
+  successMsg.value = msg;
 }
 </script>
 
@@ -37,11 +43,14 @@ function setError(msg) {
       <textarea v-model="text" name="text" id="text"
                 rows="10"
                 class="form-control"
-                :class="{ 'is-invalid': errorMsg }"
+                :class="{ 'is-invalid': errorMsg, 'is-valid': successMsg }"
                 placeholder="Enter with your code here..."
       />
       <div class="invalid-feedback">
         {{ errorMsg }}
+      </div>
+      <div class="valid-feedback">
+        {{ successMsg }}
       </div>
     </div>
     <button type="submit" class="btn btn-primary">Submit</button>
