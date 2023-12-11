@@ -3,7 +3,7 @@ import { ref } from "vue";
 import Syntactic from "@/assets/js/Syntactic";
 import {getTokens} from "@/assets/js/LexicalAnalyzer";
 
-const text = ref(`function name(string a = "Hello World", int c = 1, char b = 'a'): int\n{\n\treturn a + b;\n}`);
+const text = ref(`function name(string a = "Hello World", int c = 1, char b = 'a'): int\n{\n\tif (a) {\n\t\treturn b;\n\t} else if (teste) {\n\t\treturn c;\n\t}\n\treturn a + b;\n}`);
 function submit() {
   setError('');
   setSuccess('');
