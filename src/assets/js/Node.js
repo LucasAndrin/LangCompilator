@@ -15,6 +15,10 @@ class Node {
         this.children = children;
         return this;
     }
+
+    getChildren() {
+        return this.children;
+    }
 }
 
 export default Node;

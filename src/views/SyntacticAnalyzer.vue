@@ -1,9 +1,14 @@
 <script setup>
-import { ref } from "vue";
+import {ref} from "vue";
 import Syntactic from "@/assets/js/Syntactic";
 import {getTokens} from "@/assets/js/LexicalAnalyzer";
+import Semantic from "@/assets/js/Semantic";
 
-const text = ref(`function name(string a = "Hello World", int c = 1, char b = 'a'): int\n{\n\tif (a) {\n\t\treturn b;\n\t} else if (teste) {\n\t\treturn c;\n\t}\n\treturn a + b;\n}`);
+const text = ref(`function name(string a = "Hello World", int c = 1, char b = 'a'): int
+{
+\tstring a = "  ";
+}`);
+
 function submit() {
   setError('');
   setSuccess('');
@@ -13,24 +18,31 @@ function submit() {
 
   getTokens(text)
       .then(data => {
-        console.log(data);
         Syntactic.parse(data)
-            .then(success => {
-              setSuccess(success)
+            .then(tree => {
+              const semantic = new Semantic(tree);
+              semantic.validate().then(response => {
+                setSuccess(response);
+              }).catch(error => {
+                console.log(error);
+                setError(error);
+              });
             }).catch(error => {
-              setError(error);
-            });
+          setError(error);
+        });
       }).catch(error => {
-        setError(error);
-      });
+    setError(error);
+  });
 }
 
 const errorMsg = ref('');
+
 function setError(msg) {
   errorMsg.value = msg;
 }
 
 const successMsg = ref('');
+
 function setSuccess(msg) {
   successMsg.value = msg;
 }

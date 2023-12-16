@@ -813,7 +813,7 @@ export default class Syntactic {
     static parse(tokens) {
         return new Promise((resolve, reject) => {
             const stack = [0];
-            const stackNode = [];
+            const tree = [];
             let i = 0;
 
             while (tokens) {
@@ -827,22 +827,24 @@ export default class Syntactic {
                 switch (action) {
                     case 'SHIFT':
                         stack.unshift(parseInt(argument));
-                        stackNode.push(Node.create(token));
+                        tree.push(Node.create(token));
                         i++;
                         break;
                     case 'REDUCE':
+                        // eslint-disable-next-line no-case-declarations
                         const children = [];
                         for (let j = 0; j < parseInt(argument); j++) {
                             stack.shift();
-                            children.push(stackNode.pop());
+                            children.push(tree.pop());
                         }
 
-                        stackNode.push(Node.create(nonTerminal).link(children.reverse()));
+                        tree.push(Node.create(nonTerminal).link(children.reverse()));
                         stack.unshift(this.transitions[stack[0]].goto[nonTerminal]);
                         break;
                     case 'ACCEPT':
-                        console.log(stackNode);
-                        return resolve('Ok');
+                        // console.log('Derivation Tree');
+                        console.log(tree);
+                        return resolve(tree[0]);
                     default:
                         return reject('Unexpected Error!');
                 }
